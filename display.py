@@ -1,6 +1,5 @@
 import tkinter as tk
 
-
 class Display:
   #sets up initial window and its settings
   def __init__(self):
