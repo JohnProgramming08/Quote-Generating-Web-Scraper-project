@@ -46,10 +46,15 @@ class BackEnd:
       #tag_display_text += f"{key_tag_text}\n"
       #tag_display.configure(text = tag_display_text)
 
-  #sear hes multiple pages until it finds 10 quotes with the right tags
+  #searches multiple pages until it finds 10 quotes with the right tags
   def search(self, quote_display, search_input):
+    self.random = False
+    self.page_number = 1
     page_number = 2
     found_quotes = 0
+    self.quote_list = []
+    self.quote_index = 0
+    
     while found_quotes < 10:
       #selects a page to scrape
       url = f"https://quotes.toscrape.com/page/{page_number}/"
@@ -75,8 +80,17 @@ class BackEnd:
         for tag in tag_list:
           if search_input == tag:
             found_quotes += 1
+            self.quote_list.append([quote_text, author_text, tag_text])
 
       page_number += 1
+
+    quote_display_text = ""
+    quote = self.quote_list[0][0]
+    author = self.quote_list[0][1]
+    tags = self.quote_list[0][2]
+
+    quote_display_text = f" quote:\n{quote}\n\n author:\n{author}\n\n keywords:\n{tags}"
+    #quote_display.configure(text = quote_display_text)
   
   #displays the next quote
   def next(self, quote_display):
@@ -106,10 +120,17 @@ class BackEnd:
       for tag in tag_list:
         tag_text += f"{tag}, "      
     
-    
-    
+    else:
+      self.quote_index += 1
+      quote_text = self.quote_list[self.quote_index][0]
+      author_text = self.quote_list[self.quote_index][1]
+      tags = self.quote_list[self.quote_index][2]
+
+      quote_display_text = f" quote:\n{quote_text}\n\n author:\n{author_text}\n\n keywords:\n{tags}"
+      #quote_display.configure(text = quote_display_text)
 
 #testing purposes
 back_end = BackEnd()
 back_end.random_quote("quote_display")
 back_end.popular_tags("tag display")
+back_end.search("quote_display", "love")
