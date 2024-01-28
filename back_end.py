@@ -129,8 +129,42 @@ class BackEnd:
       quote_display_text = f" quote:\n{quote_text}\n\n author:\n{author_text}\n\n keywords:\n{tags}"
       #quote_display.configure(text = quote_display_text)
 
-#testing purposes
-back_end = BackEnd()
-back_end.random_quote("quote_display")
-back_end.popular_tags("tag display")
-back_end.search("quote_display", "love")
+  #displays the previous quote
+  def back(self, quote_diaplay):
+    #if the quote is a random one then it will just show the previous one
+    if self.random == True:
+      if self.quote_number == 1:
+        self.quote_number = 9
+        self.page_number -= 1
+
+        page_to_scrape = requests.get(f"https://quotes.toscrape.com/page{self.page_number}/")
+        page_to_scrape.raise_for_status()
+        self.soup_random = BeautifulSoup(page_to_scrape.text, "html.parser")
+
+      else:
+        self.quote_number -= 1
+
+      quote_list = self.soup_random.find_all(attrs = {"itemprop":"text"})
+      quote_text = quote_list[self.quote_number].text
+
+      author_list = self.soup_random.find_all(attrs = {"itemprop":"author"})
+      author_text = author_list[self.quote_number].text
+
+      meta_tags = self.soup_random.find_all("meta", attrs = {"itemprop":"keywords"})
+      tags = meta_tags[self.quote_number].get("content")
+      tag_list = tags.split(",")
+      tag_text = ""
+      for tag in tag_list:
+        tag_text += f"{tag}, "      
+
+    else:
+      self.quote_index -= 1
+      quote_text = self.quote_list[self.quote_index][0]
+      author_text = self.quote_list[self.quote_index][1]
+      tags = self.quote_list[self.quote_index][2]
+
+      quote_display_text = f" quote:\n{quote_text}\n\n author:\n{author_text}\n\n keywords:\n{tags}"
+      #quote_display.configure(text = quote_display_text)
+
+
+

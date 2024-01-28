@@ -51,9 +51,4 @@ class Display:
 
   
   
-#testing purposes
-display = Display()
-display.frames()
-display.heading("search")
-display.quote_display("next", "back")
-display.root.mainloop()
+
