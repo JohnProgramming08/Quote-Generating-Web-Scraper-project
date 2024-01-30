@@ -10,7 +10,7 @@ class BackEnd:
     self.soup_home = BeautifulSoup(self.page_to_scrape.text, "html.parser")
 
   #searches for a random quote
-  def random_quote(self, quote_display):
+  def random_quote(self):
     self.random = True
     self.page_number = random.randint(1, 10)
     self.quote_number = random.randint(1, 9)
@@ -32,9 +32,9 @@ class BackEnd:
     for tag in tag_list:
       tag_text += f"{tag}, "
 
-
-    #quote_display.configure(text = f" quote:\n{quote_text}\n\n author:\n{author_text}\n\n keywords:\n{tag_text}")
-
+    quote_display = f" quote:\n{quote_text}\n\n author:\n{author_text}\n\n keywords:\n{tag_text}"
+    return quote_display
+  
   #displays the most popular tags
   def popular_tags(self, tag_display):
     soup = BeautifulSoup(self.page_to_scrape.text, "html.parser")
@@ -42,12 +42,12 @@ class BackEnd:
     
     for key_tag in key_tag_list:
       key_tag_text = key_tag.text.replace("\n", "")
-      #tag_display_text = tag_display.cget("text")
-      #tag_display_text += f"{key_tag_text}\n"
-      #tag_display.configure(text = tag_display_text)
+      tag_display_text = tag_display.cget("text")
+      tag_display_text += f"{key_tag_text}\n"
+      tag_display.configure(text = tag_display_text)
 
   #searches multiple pages until it finds 10 quotes with the right tags
-  def search(self, quote_display, search_input):
+  def search(self, search_input):
     self.random = False
     self.page_number = 1
     page_number = 2
@@ -90,10 +90,10 @@ class BackEnd:
     tags = self.quote_list[0][2]
 
     quote_display_text = f" quote:\n{quote}\n\n author:\n{author}\n\n keywords:\n{tags}"
-    #quote_display.configure(text = quote_display_text)
+    return quote_display_text
   
   #displays the next quote
-  def next(self, quote_display):
+  def next(self):
     #if the quote is a random one then it will just show the next one
     if self.random == True:
       if self.quote_number == 9:
@@ -119,6 +119,9 @@ class BackEnd:
       tag_text = ""
       for tag in tag_list:
         tag_text += f"{tag}, "      
+
+      quote_display_text = f" quote:\n{quote_text}\n\n author:\n{author_text}\n\n keywords:\n{tags}"
+      return quote_display_text
     
     else:
       self.quote_index += 1
@@ -127,10 +130,10 @@ class BackEnd:
       tags = self.quote_list[self.quote_index][2]
 
       quote_display_text = f" quote:\n{quote_text}\n\n author:\n{author_text}\n\n keywords:\n{tags}"
-      #quote_display.configure(text = quote_display_text)
+      return quote_display_text
 
   #displays the previous quote
-  def back(self, quote_diaplay):
+  def back(self):
     #if the quote is a random one then it will just show the previous one
     if self.random == True:
       if self.quote_number == 1:
@@ -155,7 +158,10 @@ class BackEnd:
       tag_list = tags.split(",")
       tag_text = ""
       for tag in tag_list:
-        tag_text += f"{tag}, "      
+        tag_text += f"{tag}, "    
+
+      quote_display_text = f" quote:\n{quote_text}\n\n author:\n{author_text}\n\n keywords:\n{tags}"
+      return quote_display_text
 
     else:
       self.quote_index -= 1
@@ -164,7 +170,7 @@ class BackEnd:
       tags = self.quote_list[self.quote_index][2]
 
       quote_display_text = f" quote:\n{quote_text}\n\n author:\n{author_text}\n\n keywords:\n{tags}"
-      #quote_display.configure(text = quote_display_text)
+      return quote_display_text
 
 
 
