@@ -6,7 +6,7 @@ class Display:
   def __init__(self):
     self.root = tk.Tk()
     self.root.title("Quote Finder")
-    self.root.geometry("600x300")
+    self.root.geometry("400x600")
     self.root.resizable(False, False)
     self.root.configure(bg = "white")
 
@@ -51,6 +51,7 @@ class Display:
     self.back_button = tk.Button(self.root, text = "<", command = back)
     self.back_button.grid(row = 6, column = 1, sticky = "w")
 
+  #updates the quote display to output the quotes
   def update_quote_display(self, quote_text):
     self.quote_label.config(text = quote_text)
   

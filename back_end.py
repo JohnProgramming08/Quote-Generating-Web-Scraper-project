@@ -11,6 +11,8 @@ class BackEnd:
 
   #searches for a random quote
   def random_quote(self):
+    character_number = 0
+    quote_lined_text = ""
     self.random = True
     self.page_number = random.randint(1, 10)
     self.quote_number = random.randint(1, 9)
@@ -22,17 +24,32 @@ class BackEnd:
     quote_list = self.soup_random.find_all(attrs = {"itemprop":"text"})
     quote_text = quote_list[self.quote_number].text
 
+    #wraps quote text
+    for character in quote_text:
+      character_number += 1
+      quote_lined_text += character
+      if character_number == 50:
+        if quote_lined_text[character_number - 1] != " ":
+          quote_lined_text += "\n-"
+
+        else:
+          quote_lined_text += ("\n")
+          
+        character_number = 0
+
     author_list = self.soup_random.find_all(attrs = {"itemprop":"author"})
     author_text = author_list[self.quote_number].text
 
     meta_tags = self.soup_random.find_all("meta", attrs = {"itemprop":"keywords"})
     tags = meta_tags[self.quote_number].get("content")
     tag_list = tags.split(",")
+    
     tag_text = ""
     for tag in tag_list:
       tag_text += f"{tag}, "
+    tag_text = tag_text[:-2]
 
-    quote_display = f" quote:\n{quote_text}\n\n author:\n{author_text}\n\n keywords:\n{tag_text}"
+    quote_display = f" quote:\n{quote_lined_text}\n\n author:\n{author_text}\n\n keywords:\n{tag_text}"
     return quote_display
   
   #displays the most popular tags
@@ -56,6 +73,9 @@ class BackEnd:
     self.quote_index = 0
     
     while found_quotes < 10:
+      if page_number == 102:
+        break
+      
       #selects a page to scrape
       url = f"https://quotes.toscrape.com/page/{page_number}/"
       page_to_scrape = requests.get(url)
@@ -76,21 +96,29 @@ class BackEnd:
         tags = meta_tags[index]
         tag_text = tags.get("content")
         tag_list = tag_text.split(",")
-
+        
+        tag_text = ""
+        for tag in tag_list:
+          tag_text += f"{tag}, "
+        tag_text = tag_text[:-2]
+        
         for tag in tag_list:
           if search_input == tag:
             found_quotes += 1
             self.quote_list.append([quote_text, author_text, tag_text])
 
       page_number += 1
+    if found_quotes >= 1:
+      quote_display_text = ""
+      quote = self.quote_list[0][0]
+      author = self.quote_list[0][1]
+      tags = self.quote_list[0][2]
+  
+      quote_display_text = f" quote:\n{quote}\n\n author:\n{author}\n\n keywords:\n{tags}"
+      return quote_display_text
 
-    quote_display_text = ""
-    quote = self.quote_list[0][0]
-    author = self.quote_list[0][1]
-    tags = self.quote_list[0][2]
-
-    quote_display_text = f" quote:\n{quote}\n\n author:\n{author}\n\n keywords:\n{tags}"
-    return quote_display_text
+    else:
+      return "No quotes found with that tag"
   
   #displays the next quote
   def next(self):
@@ -116,11 +144,14 @@ class BackEnd:
       meta_tags = self.soup_random.find_all("meta", attrs = {"itemprop":"keywords"})
       tags = meta_tags[self.quote_number].get("content")
       tag_list = tags.split(",")
+      
       tag_text = ""
       for tag in tag_list:
-        tag_text += f"{tag}, "      
+        tag_text += f"{tag}, "
+      tag_text = tag_text[:-2]
 
-      quote_display_text = f" quote:\n{quote_text}\n\n author:\n{author_text}\n\n keywords:\n{tags}"
+
+      quote_display_text = f" quote:\n{quote_text}\n\n author:\n{author_text}\n\n keywords:\n{tag_text}"
       return quote_display_text
     
     else:
@@ -156,11 +187,13 @@ class BackEnd:
       meta_tags = self.soup_random.find_all("meta", attrs = {"itemprop":"keywords"})
       tags = meta_tags[self.quote_number].get("content")
       tag_list = tags.split(",")
+      
       tag_text = ""
       for tag in tag_list:
-        tag_text += f"{tag}, "    
+        tag_text += f"{tag}, "
+      tag_text = tag_text[:-2]
 
-      quote_display_text = f" quote:\n{quote_text}\n\n author:\n{author_text}\n\n keywords:\n{tags}"
+      quote_display_text = f" quote:\n{quote_text}\n\n author:\n{author_text}\n\n keywords:\n{tag_text}"
       return quote_display_text
 
     else:
