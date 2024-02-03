@@ -6,8 +6,7 @@ class Display:
   def __init__(self):
     self.root = tk.Tk()
     self.root.title("Quote Finder")
-    self.root.geometry("400x600")
-    self.root.resizable(False, False)
+    self.root.geometry("450x600")
     self.root.configure(bg = "white")
 
   #creates the frames that are going to be used in the program
@@ -18,10 +17,16 @@ class Display:
     self.quote_frame = tk.LabelFrame(self.root, bg = "white", padx = 10, pady = 10)
     self.quote_frame.grid(row = 5, column = 1)
 
+    self.tags_frame = tk.LabelFrame(self.root, bg = "white", padx = 10, pady = 10, text = "Popular Tags")
+    self.tags_frame.grid(row = 1, column = 3, rowspan = 5)
+
   def search_input(self):
     self.search_bar = tk.Entry(self.search_frame)
     self.search_bar.grid(row = 0, column = 0, ipadx = 30)
     self.search_bar.insert(0, "enter a tag that describes the quote")
+
+    self.popular_tags = tk.Label(self.tags_frame, text = "", bg = "white")
+    self.popular_tags.grid(row = 0, column = 0)
   
   #creates the widgets used to generate/find quotes
   def heading(self, random, search):
@@ -30,7 +35,7 @@ class Display:
 
     self.search_button = tk.Button(self.search_frame, text = "Search", command = search)
     self.search_button.grid(row = 0, column = 1)
-
+    
     self.empty_row1 = tk.Label(self.root, text = "", bg = "white")
     self.empty_row1.grid(row = 2, column = 0, columnspan = 3)
     

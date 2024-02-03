@@ -29,9 +29,14 @@ def main():
       quote_text = back_end.back()
       display.update_quote_display(quote_text)
 
+    def popular_tags():
+      back_end.popular_tags(display.popular_tags)
+
     #edit the quote display
     quote_display = display.quote_display(next_quote, back_quote)
     display.heading(random_quote, search_quote)
+  
+    popular_tags()
     display.root.mainloop()
   
 #execute the main function

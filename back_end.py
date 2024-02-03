@@ -55,12 +55,13 @@ class BackEnd:
   def popular_tags(self, tag_display):
     soup = BeautifulSoup(self.page_to_scrape.text, "html.parser")
     key_tag_list = soup.find_all(attrs = {"class":"tag-item"})
+    print(key_tag_list)
     
     for key_tag in key_tag_list:
       key_tag_text = key_tag.text.replace("\n", "")
       tag_display_text = tag_display.cget("text")
       tag_display_text += f"{key_tag_text}\n"
-      tag_display.configure(text = tag_display_text)
+      tag_display.config(text = tag_display_text)
 
   #searches multiple pages until it finds 10 quotes with the right tags
   def search(self, search_input):
