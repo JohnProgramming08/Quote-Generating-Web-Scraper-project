@@ -2,6 +2,7 @@ from bs4 import BeautifulSoup
 import requests
 import random
 
+
 #creates a class for the back end of the app
 class BackEnd:
   #sets up the home page url for parsing
@@ -9,10 +10,20 @@ class BackEnd:
     self.page_to_scrape = requests.get("https://quotes.toscrape.com/")
     self.soup_home = BeautifulSoup(self.page_to_scrape.text, "html.parser")
 
-  #searches for a random quote
-  def random_quote(self):
+  #wraps quote text
+  def text_wrap(self, quote_text):
     character_number = 0
     quote_lined_text = ""
+    for character in quote_text:
+      character_number += 1
+      quote_lined_text += character
+      if character_number == 50:
+        quote_lined_text += ("\n")
+        character_number = 0
+    return quote_lined_text
+  
+  #searches for a random quote
+  def random_quote(self):
     self.random = True
     self.page_number = random.randint(1, 10)
     self.quote_number = random.randint(1, 9)
@@ -23,19 +34,7 @@ class BackEnd:
 
     quote_list = self.soup_random.find_all(attrs = {"itemprop":"text"})
     quote_text = quote_list[self.quote_number].text
-
-    #wraps quote text
-    for character in quote_text:
-      character_number += 1
-      quote_lined_text += character
-      if character_number == 50:
-        if quote_lined_text[character_number - 1] != " ":
-          quote_lined_text += "\n-"
-
-        else:
-          quote_lined_text += ("\n")
-          
-        character_number = 0
+    quote_lined_text = self.text_wrap(quote_text)
 
     author_list = self.soup_random.find_all(attrs = {"itemprop":"author"})
     author_text = author_list[self.quote_number].text
@@ -105,7 +104,8 @@ class BackEnd:
         for tag in tag_list:
           if search_input == tag:
             found_quotes += 1
-            self.quote_list.append([quote_text, author_text, tag_text])
+            quote_lined_text = self.text_wrap(quote_text)
+            self.quote_list.append([quote_lined_text, author_text, tag_text])
 
       page_number += 1
     if found_quotes >= 1:
@@ -137,6 +137,7 @@ class BackEnd:
 
       quote_list = self.soup_random.find_all(attrs = {"itemprop":"text"})
       quote_text = quote_list[self.quote_number].text
+      quote_lined_text = self.text_wrap(quote_text)
 
       author_list = self.soup_random.find_all(attrs = {"itemprop":"author"})
       author_text = author_list[self.quote_number].text
@@ -151,7 +152,7 @@ class BackEnd:
       tag_text = tag_text[:-2]
 
 
-      quote_display_text = f" quote:\n{quote_text}\n\n author:\n{author_text}\n\n keywords:\n{tag_text}"
+      quote_display_text = f" quote:\n{quote_lined_text}\n\n author:\n{author_text}\n\n keywords:\n{tag_text}"
       return quote_display_text
     
     else:
@@ -180,6 +181,7 @@ class BackEnd:
 
       quote_list = self.soup_random.find_all(attrs = {"itemprop":"text"})
       quote_text = quote_list[self.quote_number].text
+      quote_lined_text = self.text_wrap(quote_text)
 
       author_list = self.soup_random.find_all(attrs = {"itemprop":"author"})
       author_text = author_list[self.quote_number].text
@@ -193,7 +195,7 @@ class BackEnd:
         tag_text += f"{tag}, "
       tag_text = tag_text[:-2]
 
-      quote_display_text = f" quote:\n{quote_text}\n\n author:\n{author_text}\n\n keywords:\n{tag_text}"
+      quote_display_text = f" quote:\n{quote_lined_text}\n\n author:\n{author_text}\n\n keywords:\n{tag_text}"
       return quote_display_text
 
     else:
