@@ -9,17 +9,23 @@ class BackEnd:
   def __init__(self):
     self.page_to_scrape = requests.get("https://quotes.toscrape.com/")
     self.soup_home = BeautifulSoup(self.page_to_scrape.text, "html.parser")
-
+    self.random = "unassigned_value"
+    self.error_message = False
+    self.start_message = False
+    self.end_message = False
+    
   #wraps quote text
   def text_wrap(self, quote_text):
     character_number = 0
     quote_lined_text = ""
+    
     for character in quote_text:
       character_number += 1
       quote_lined_text += character
       if character_number == 50:
         quote_lined_text += ("\n")
         character_number = 0
+        
     return quote_lined_text
   
   #searches for a random quote
@@ -55,7 +61,6 @@ class BackEnd:
   def popular_tags(self, tag_display):
     soup = BeautifulSoup(self.page_to_scrape.text, "html.parser")
     key_tag_list = soup.find_all(attrs = {"class":"tag-item"})
-    print(key_tag_list)
     
     for key_tag in key_tag_list:
       key_tag_text = key_tag.text.replace("\n", "")
@@ -68,11 +73,11 @@ class BackEnd:
     self.random = False
     self.page_number = 1
     page_number = 2
-    found_quotes = 0
+    self.found_quotes = 0
     self.quote_list = []
     self.quote_index = 0
     
-    while found_quotes < 10:
+    while self.found_quotes < 10:
       if page_number == 102:
         break
       
@@ -104,12 +109,12 @@ class BackEnd:
         
         for tag in tag_list:
           if search_input == tag:
-            found_quotes += 1
+            self.found_quotes += 1
             quote_lined_text = self.text_wrap(quote_text)
             self.quote_list.append([quote_lined_text, author_text, tag_text])
 
       page_number += 1
-    if found_quotes >= 1:
+    if self.found_quotes >= 1:
       quote_display_text = ""
       quote = self.quote_list[0][0]
       author = self.quote_list[0][1]
@@ -152,18 +157,32 @@ class BackEnd:
         tag_text += f"{tag}, "
       tag_text = tag_text[:-2]
 
-
       quote_display_text = f" quote:\n{quote_lined_text}\n\n author:\n{author_text}\n\n keywords:\n{tag_text}"
       return quote_display_text
-    
-    else:
-      self.quote_index += 1
-      quote_text = self.quote_list[self.quote_index][0]
-      author_text = self.quote_list[self.quote_index][1]
-      tags = self.quote_list[self.quote_index][2]
+      
+    #if the quote is not a random one then it will show the next one
+    elif self.random == False:
+      if self.quote_index < self.found_quotes - 1:
+        if self.error_message == False and self.start_message == False:
+          self.quote_index += 1
 
-      quote_display_text = f" quote:\n{quote_text}\n\n author:\n{author_text}\n\n keywords:\n{tags}"
-      return quote_display_text
+        elif self.start_message == True:
+          self.error_message = False
+          self.start_message = False
+        
+        quote_text = self.quote_list[self.quote_index][0]
+        author_text = self.quote_list[self.quote_index][1]
+        tags = self.quote_list[self.quote_index][2]
+        
+        quote_display_text = f" quote:\n{quote_text}\n\n author:\n{author_text}\n\n keywords:\n{tags}"
+        return quote_display_text
+
+      else:
+        self.end_message = True
+        return "No more quotes with that tag!"
+
+    else:
+      return "No quotes searched for yet!"
 
   #displays the previous quote
   def back(self):
@@ -199,14 +218,24 @@ class BackEnd:
       quote_display_text = f" quote:\n{quote_lined_text}\n\n author:\n{author_text}\n\n keywords:\n{tag_text}"
       return quote_display_text
 
+    elif self.random == False:
+      if self.quote_index > 0:
+        if self.end_message == False:
+          self.quote_index -= 1
+
+        elif self.end_message == True:
+          self.end_message = False
+          
+        quote_text = self.quote_list[self.quote_index][0]
+        author_text = self.quote_list[self.quote_index][1]
+        tags = self.quote_list[self.quote_index][2]
+
+        quote_display_text = f" quote:\n{quote_text}\n\n author:\n{author_text}\n\n keywords:\n{tags}"
+        return quote_display_text
+
+      else:
+        self.start_message = True
+        return "This is as far back as you can go!"
+
     else:
-      self.quote_index -= 1
-      quote_text = self.quote_list[self.quote_index][0]
-      author_text = self.quote_list[self.quote_index][1]
-      tags = self.quote_list[self.quote_index][2]
-
-      quote_display_text = f" quote:\n{quote_text}\n\n author:\n{author_text}\n\n keywords:\n{tags}"
-      return quote_display_text
-
-
-
+      return "No quotes searched for yet!"

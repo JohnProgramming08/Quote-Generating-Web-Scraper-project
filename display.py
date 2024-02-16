@@ -18,13 +18,14 @@ class Display:
     self.quote_frame.grid(row = 5, column = 1)
 
     self.tags_frame = tk.LabelFrame(self.root, bg = "white", padx = 10, pady = 10, text = "Popular Tags")
-    self.tags_frame.grid(row = 1, column = 3, rowspan = 5)
+    self.tags_frame.grid(row = 0, column = 3, rowspan = 6)
 
   def search_input(self):
     self.search_bar = tk.Entry(self.search_frame)
     self.search_bar.grid(row = 0, column = 0, ipadx = 30)
-    self.search_bar.insert(0, "enter a tag that describes the quote")
-
+    #self.search_bar.insert(0, "enter a tag that describes the quote")
+    self.search_bar.insert(0, "simile")
+    
     self.popular_tags = tk.Label(self.tags_frame, text = "", bg = "white")
     self.popular_tags.grid(row = 0, column = 0)
   
@@ -36,14 +37,14 @@ class Display:
     self.search_button = tk.Button(self.search_frame, text = "Search", command = search)
     self.search_button.grid(row = 0, column = 1)
     
-    self.empty_row1 = tk.Label(self.root, text = "", bg = "white")
-    self.empty_row1.grid(row = 2, column = 0, columnspan = 3)
+    self.temporary_row = tk.Label(self.root, text = "", bg = "white")
+    self.temporary_row.grid(row = 2, column = 0, columnspan = 3)
     
     self.random_button = tk.Button(self.root, text = "Generate Random Quote", command = random)
     self.random_button.grid(row = 3, column = 0, sticky = "w", columnspan = 3)
 
-    self.empty_row2 = tk.Label(self.root, text = "", bg = "white")
-    self.empty_row2.grid(row = 4, column = 0)
+    self.empty_row1 = tk.Label(self.root, text = "", bg = "white")
+    self.empty_row1.grid(row = 4, column = 0)
 
   #creates the widget for displaying the quotes and scrolling through them
   def quote_display(self, next, back):
@@ -59,5 +60,6 @@ class Display:
   #updates the quote display to output the quotes
   def update_quote_display(self, quote_text):
     self.quote_label.config(text = quote_text)
+
   
 

@@ -29,6 +29,7 @@ def main():
       quote_text = back_end.back()
       display.update_quote_display(quote_text)
 
+    #displays popular quotes
     def popular_tags():
       back_end.popular_tags(display.popular_tags)
 
