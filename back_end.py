@@ -10,7 +10,6 @@ class BackEnd:
     self.page_to_scrape = requests.get("https://quotes.toscrape.com/")
     self.soup_home = BeautifulSoup(self.page_to_scrape.text, "html.parser")
     self.random = "unassigned_value"
-    self.error_message = False
     self.start_message = False
     self.end_message = False
     
@@ -133,41 +132,49 @@ class BackEnd:
       if self.quote_number == 9:
         self.quote_number = 1
         self.page_number += 1
-  
-        page_to_scrape = requests.get(f"https://quotes.toscrape.com/page{self.page_number}/")
-        page_to_scrape.raise_for_status()
-        self.soup_random = BeautifulSoup(page_to_scrape.text, "html.parser")
+
+        try:
+          if self.page_number >= 0:
+            page_to_scrape = requests.get(f"https://quotes.toscrape.com/page{self.page_number}/")
+            page_to_scrape.raise_for_status()
+            self.soup_random = BeautifulSoup(page_to_scrape.text, "html.parser")
+
+        except:
+          return "Please try again"
   
       else:
         self.quote_number += 1
 
-      quote_list = self.soup_random.find_all(attrs = {"itemprop":"text"})
-      quote_text = quote_list[self.quote_number].text
-      quote_lined_text = self.text_wrap(quote_text)
+      try:
+        quote_list = self.soup_random.find_all(attrs = {"itemprop":"text"})
+        quote_text = quote_list[self.quote_number].text
+        quote_lined_text = self.text_wrap(quote_text)
+  
+        author_list = self.soup_random.find_all(attrs = {"itemprop":"author"})
+        author_text = author_list[self.quote_number].text
+  
+        meta_tags = self.soup_random.find_all("meta", attrs = {"itemprop":"keywords"})
+        tags = meta_tags[self.quote_number].get("content")
+        tag_list = tags.split(",")
+        
+        tag_text = ""
+        for tag in tag_list:
+          tag_text += f"{tag}, "
+        tag_text = tag_text[:-2]
+  
+        quote_display_text = f" quote:\n{quote_lined_text}\n\n author:\n{author_text}\n\n keywords:\n{tag_text}"
+        return quote_display_text
 
-      author_list = self.soup_random.find_all(attrs = {"itemprop":"author"})
-      author_text = author_list[self.quote_number].text
-
-      meta_tags = self.soup_random.find_all("meta", attrs = {"itemprop":"keywords"})
-      tags = meta_tags[self.quote_number].get("content")
-      tag_list = tags.split(",")
-      
-      tag_text = ""
-      for tag in tag_list:
-        tag_text += f"{tag}, "
-      tag_text = tag_text[:-2]
-
-      quote_display_text = f" quote:\n{quote_lined_text}\n\n author:\n{author_text}\n\n keywords:\n{tag_text}"
-      return quote_display_text
+      except:
+        return "Please try again"
       
     #if the quote is not a random one then it will show the next one
     elif self.random == False:
       if self.quote_index < self.found_quotes - 1:
-        if self.error_message == False and self.start_message == False:
+        if self.start_message == False:
           self.quote_index += 1
 
         elif self.start_message == True:
-          self.error_message = False
           self.start_message = False
         
         quote_text = self.quote_list[self.quote_index][0]
@@ -188,35 +195,43 @@ class BackEnd:
   def back(self):
     #if the quote is a random one then it will just show the previous one
     if self.random == True:
-      if self.quote_number == 1:
+      if self.quote_number == 1 and self.page_number > 0:
         self.quote_number = 9
         self.page_number -= 1
+        
+        try:
+          page_to_scrape = requests.get(f"https://quotes.toscrape.com/page{self.page_number}/")
+          page_to_scrape.raise_for_status()
+          self.soup_random = BeautifulSoup(page_to_scrape.text, "html.parser")
 
-        page_to_scrape = requests.get(f"https://quotes.toscrape.com/page{self.page_number}/")
-        page_to_scrape.raise_for_status()
-        self.soup_random = BeautifulSoup(page_to_scrape.text, "html.parser")
+        except:
+          return "Please try again"
 
       else:
         self.quote_number -= 1
 
-      quote_list = self.soup_random.find_all(attrs = {"itemprop":"text"})
-      quote_text = quote_list[self.quote_number].text
-      quote_lined_text = self.text_wrap(quote_text)
+      try:
+        quote_list = self.soup_random.find_all(attrs = {"itemprop":"text"})
+        quote_text = quote_list[self.quote_number].text
+        quote_lined_text = self.text_wrap(quote_text)
+  
+        author_list = self.soup_random.find_all(attrs = {"itemprop":"author"})
+        author_text = author_list[self.quote_number].text
+  
+        meta_tags = self.soup_random.find_all("meta", attrs = {"itemprop":"keywords"})
+        tags = meta_tags[self.quote_number].get("content")
+        tag_list = tags.split(",")
+        
+        tag_text = ""
+        for tag in tag_list:
+          tag_text += f"{tag}, "
+        tag_text = tag_text[:-2]
+  
+        quote_display_text = f" quote:\n{quote_lined_text}\n\n author:\n{author_text}\n\n keywords:\n{tag_text}"
+        return quote_display_text
 
-      author_list = self.soup_random.find_all(attrs = {"itemprop":"author"})
-      author_text = author_list[self.quote_number].text
-
-      meta_tags = self.soup_random.find_all("meta", attrs = {"itemprop":"keywords"})
-      tags = meta_tags[self.quote_number].get("content")
-      tag_list = tags.split(",")
-      
-      tag_text = ""
-      for tag in tag_list:
-        tag_text += f"{tag}, "
-      tag_text = tag_text[:-2]
-
-      quote_display_text = f" quote:\n{quote_lined_text}\n\n author:\n{author_text}\n\n keywords:\n{tag_text}"
-      return quote_display_text
+      except:
+        return "Please try again"
 
     elif self.random == False:
       if self.quote_index > 0:
