@@ -32,6 +32,7 @@ class BackEnd:
     self.random = True
     self.page_number = random.randint(1, 10)
     self.quote_number = random.randint(1, 9)
+    self.tag_number = 0
 
     page_to_scrape = requests.get(f"https://quotes.toscrape.com/page/{self.page_number}/")
     page_to_scrape.raise_for_status()
@@ -50,7 +51,9 @@ class BackEnd:
     
     tag_text = ""
     for tag in tag_list:
-      tag_text += f"{tag}, "
+      if self.tag_number < 5:
+        tag_text += f"{tag}, "
+        self.tag_number += 1
     tag_text = tag_text[:-2]
 
     quote_display = f" quote:\n{quote_lined_text}\n\n author:\n{author_text}\n\n keywords:\n{tag_text}"
@@ -75,6 +78,7 @@ class BackEnd:
     self.found_quotes = 0
     self.quote_list = []
     self.quote_index = 0
+    self.tag_number = 0
     
     while self.found_quotes < 10:
       if page_number == 102:
@@ -103,7 +107,9 @@ class BackEnd:
         
         tag_text = ""
         for tag in tag_list:
-          tag_text += f"{tag}, "
+          if self.tag_number < 5:
+            tag_text += f"{tag}, "
+            self.tag_number += 1
         tag_text = tag_text[:-2]
         
         for tag in tag_list:
@@ -127,6 +133,7 @@ class BackEnd:
   
   #displays the next quote
   def next(self):
+    self.tag_number = 0
     #if the quote is a random one then it will just show the next one
     if self.random == True:
       if self.quote_number == 9:
@@ -135,12 +142,13 @@ class BackEnd:
 
         try:
           if self.page_number >= 0:
-            page_to_scrape = requests.get(f"https://quotes.toscrape.com/page{self.page_number}/")
+            url = f"https://quotes.toscrape.com/page/{self.page_number}/"
+            page_to_scrape = requests.get(url)
             page_to_scrape.raise_for_status()
             self.soup_random = BeautifulSoup(page_to_scrape.text, "html.parser")
 
         except:
-          return "Please try again"
+          return "An error occured please try again"
   
       else:
         self.quote_number += 1
@@ -159,7 +167,9 @@ class BackEnd:
         
         tag_text = ""
         for tag in tag_list:
-          tag_text += f"{tag}, "
+          if self.tag_number < 5:
+            tag_text += f"{tag}, "
+            self.tag_number += 1
         tag_text = tag_text[:-2]
   
         quote_display_text = f" quote:\n{quote_lined_text}\n\n author:\n{author_text}\n\n keywords:\n{tag_text}"
@@ -193,6 +203,7 @@ class BackEnd:
 
   #displays the previous quote
   def back(self):
+    self.tag_number = 0
     #if the quote is a random one then it will just show the previous one
     if self.random == True:
       if self.quote_number == 1 and self.page_number > 0:
@@ -200,12 +211,13 @@ class BackEnd:
         self.page_number -= 1
         
         try:
-          page_to_scrape = requests.get(f"https://quotes.toscrape.com/page{self.page_number}/")
+          url = f"https://quotes.toscrape.com/page/{self.page_number}/"
+          page_to_scrape = requests.get(url)
           page_to_scrape.raise_for_status()
           self.soup_random = BeautifulSoup(page_to_scrape.text, "html.parser")
 
         except:
-          return "Please try again"
+          return "An error occured please try again"
 
       else:
         self.quote_number -= 1
@@ -224,7 +236,9 @@ class BackEnd:
         
         tag_text = ""
         for tag in tag_list:
-          tag_text += f"{tag}, "
+          if self.tag_number < 5:
+            tag_text += f"{tag}, "
+            self.tag_number += 1
         tag_text = tag_text[:-2]
   
         quote_display_text = f" quote:\n{quote_lined_text}\n\n author:\n{author_text}\n\n keywords:\n{tag_text}"

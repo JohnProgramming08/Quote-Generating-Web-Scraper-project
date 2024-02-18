@@ -23,8 +23,7 @@ class Display:
   def search_input(self):
     self.search_bar = tk.Entry(self.search_frame)
     self.search_bar.grid(row = 0, column = 0, ipadx = 30)
-    #self.search_bar.insert(0, "enter a tag that describes the quote")
-    self.search_bar.insert(0, "simile")
+    self.search_bar.insert(0, "enter a tag that describes the quote")
     
     self.popular_tags = tk.Label(self.tags_frame, text = "", bg = "white")
     self.popular_tags.grid(row = 0, column = 0)
